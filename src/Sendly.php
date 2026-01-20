@@ -22,28 +22,22 @@ class Sendly
     }
 
     /**
-     * Get the messages API interface.
-     */
-    public function messages(): SendlyMessages
-    {
-        return new SendlyMessages($this);
-    }
-
-    /**
-     * Send an HTTP request to the Sendly API.
+     * Send an SMS message.
      *
      * @throws CouldNotSendNotification
      */
-    public function request(string $method, string $endpoint, array $data = []): array
+    public function send(string $to, string $content, array $options = []): array
     {
+        $payload = array_merge(['to' => $to, 'body' => $content], $options);
+
         try {
-            $response = $this->httpClient->request($method, $endpoint, [
+            $response = $this->httpClient->request('POST', '/messages', [
                 'headers' => [
                     'Authorization' => 'Bearer ' . $this->apiKey,
                     'Content-Type' => 'application/json',
                     'Accept' => 'application/json',
                 ],
-                'json' => $data,
+                'json' => $payload,
             ]);
 
             $body = json_decode($response->getBody()->getContents(), true);
@@ -56,13 +50,5 @@ class Sendly
         } catch (GuzzleException $e) {
             throw CouldNotSendNotification::serviceRespondedWithAnError($e->getMessage());
         }
-    }
-
-    /**
-     * Get the API key.
-     */
-    public function getApiKey(): string
-    {
-        return $this->apiKey;
     }
 }

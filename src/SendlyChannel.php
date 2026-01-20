@@ -7,23 +7,17 @@ use NotificationChannels\Sendly\Exceptions\CouldNotSendNotification;
 
 class SendlyChannel
 {
-    protected Sendly $client;
-
-    public function __construct(Sendly $client)
+    public function __construct(protected Sendly $client)
     {
-        $this->client = $client;
     }
 
     /**
      * Send the given notification.
      *
      * @param mixed $notifiable
-     * @param \Illuminate\Notifications\Notification $notification
-     * @return SendlyResponse|null
-     *
      * @throws CouldNotSendNotification
      */
-    public function send($notifiable, Notification $notification): ?SendlyResponse
+    public function send($notifiable, Notification $notification): ?array
     {
         $message = $notification->toSendly($notifiable);
 
@@ -35,48 +29,21 @@ class SendlyChannel
             throw CouldNotSendNotification::invalidMessageObject($message);
         }
 
-        $to = $message->getTo() ?? $this->getRecipient($notifiable);
+        $to = $message->to ?? $notifiable->routeNotificationFor('sendly', $notification);
 
         if (! $to) {
-            throw CouldNotSendNotification::missingRecipient();
+            return null;
         }
 
-        $content = $message->getContent();
-
-        if (empty($content)) {
-            throw CouldNotSendNotification::emptyMessage();
+        if (empty($message->content)) {
+            return null;
         }
 
-        return $this->client->messages()->send(
-            $to,
-            $content,
-            $message->toArray()
-        );
-    }
-
-    /**
-     * Get the recipient phone number from the notifiable.
-     *
-     * @param mixed $notifiable
-     */
-    protected function getRecipient($notifiable): ?string
-    {
-        if ($notifiable->routeNotificationFor('sendly')) {
-            return $notifiable->routeNotificationFor('sendly');
+        $options = [];
+        if ($message->from) {
+            $options['from'] = $message->from;
         }
 
-        if ($notifiable->routeNotificationFor('sms')) {
-            return $notifiable->routeNotificationFor('sms');
-        }
-
-        if (isset($notifiable->phone_number)) {
-            return $notifiable->phone_number;
-        }
-
-        if (isset($notifiable->phone)) {
-            return $notifiable->phone;
-        }
-
-        return null;
+        return $this->client->send($to, $message->content, $options);
     }
 }
