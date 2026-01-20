@@ -43,6 +43,9 @@ class SendlyChannel
         if ($message->from) {
             $options['from'] = $message->from;
         }
+        if ($message->messageType) {
+            $options['messageType'] = $message->messageType;
+        }
 
         return $this->client->send($to, $message->content, $options);
     }

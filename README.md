@@ -3,7 +3,7 @@
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/laravel-notification-channels/sendly.svg?style=flat-square)](https://packagist.org/packages/laravel-notification-channels/sendly)
 [![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE.md)
 
-This package makes it easy to send SMS notifications using [Sendly](https://sendly.com) with Laravel 10.x and 11.x.
+This package makes it easy to send SMS notifications using [Sendly](https://sendly.live) with Laravel 10.x and 11.x.
 
 ## Installation
 
@@ -59,6 +59,7 @@ public function routeNotificationForSendly(): string
 | `content(string)` | Set the message body |
 | `from(string)` | Set the sender phone number |
 | `to(string)` | Set the recipient (overrides routeNotificationForSendly) |
+| `transactional()` | Mark as transactional (bypasses quiet hours) |
 
 ### Simple string messages
 

@@ -10,7 +10,7 @@ class Sendly
 {
     protected string $apiKey;
     protected HttpClient $httpClient;
-    protected string $baseUrl = 'https://api.sendly.com/v1';
+    protected string $baseUrl = 'https://sendly.live/api/v1';
 
     public function __construct(string $apiKey, ?HttpClient $httpClient = null)
     {

@@ -7,6 +7,7 @@ class SendlyMessage
     public string $content = '';
     public ?string $from = null;
     public ?string $to = null;
+    public ?string $messageType = null;
 
     public function __construct(string $content = '')
     {
@@ -30,6 +31,13 @@ class SendlyMessage
     public function to(string $to): self
     {
         $this->to = $to;
+
+        return $this;
+    }
+
+    public function transactional(): self
+    {
+        $this->messageType = 'transactional';
 
         return $this;
     }
