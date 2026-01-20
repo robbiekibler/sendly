@@ -35,7 +35,7 @@ class SendlyChannel
             return null;
         }
 
-        if (empty($message->content)) {
+        if ($message->content === '') {
             return null;
         }
 

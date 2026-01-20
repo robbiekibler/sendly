@@ -10,7 +10,7 @@ class Sendly
 {
     protected string $apiKey;
     protected HttpClient $httpClient;
-    protected string $baseUrl = 'https://sendly.live/api/v1';
+    protected string $baseUrl = 'https://sendly.live/api/v1/';
 
     public function __construct(string $apiKey, ?HttpClient $httpClient = null)
     {
@@ -28,10 +28,10 @@ class Sendly
      */
     public function send(string $to, string $content, array $options = []): array
     {
-        $payload = array_merge(['to' => $to, 'body' => $content], $options);
+        $payload = array_merge($options, ['to' => $to, 'body' => $content]);
 
         try {
-            $response = $this->httpClient->request('POST', '/messages', [
+            $response = $this->httpClient->request('POST', 'messages', [
                 'headers' => [
                     'Authorization' => 'Bearer ' . $this->apiKey,
                     'Content-Type' => 'application/json',

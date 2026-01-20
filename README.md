@@ -46,7 +46,7 @@ class OrderShipped extends Notification
 Add a `routeNotificationForSendly` method to your notifiable model:
 
 ```php
-public function routeNotificationForSendly(): string
+public function routeNotificationForSendly($notification): string
 {
     return $this->phone_number;
 }
