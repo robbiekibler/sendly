@@ -1,11 +1,20 @@
 <?php
 
-namespace NotificationChannels\:channel_namespace\Exceptions;
+namespace NotificationChannels\Sendly\Exceptions;
 
-class CouldNotSendNotification extends \Exception
+use Exception;
+
+class CouldNotSendNotification extends Exception
 {
-    public static function serviceRespondedWithAnError($response)
+    public static function serviceRespondedWithAnError(string $error): self
     {
-        return new static("Descriptive error message.");
+        return new self("Sendly API error: {$error}");
+    }
+
+    public static function invalidMessageObject($message): self
+    {
+        $type = is_object($message) ? get_class($message) : gettype($message);
+
+        return new self("Invalid message. Expected SendlyMessage or string, got: {$type}");
     }
 }
